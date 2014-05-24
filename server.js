@@ -24,6 +24,7 @@ server.use(bodyParser());
 server.use(multiparty({limit: '8mb'}));
 server.use(cookieParser());
 server.use(serveStatic(__dirname + '/dist'));
+server.use(serveStatic(__dirname + '/testdata'));
 server.use(methodOverride());
 
 server.use(errorHandler({ dumpExceptions: true, showStack: true }));
