@@ -1,6 +1,10 @@
 {
   "name": "stardate2",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ssiops/sd2"
+  },
   "dependencies": {},
   "devDependencies": {
     "connect": "~2.17.0",
