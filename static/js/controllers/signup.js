@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('stardate2App')
-  .controller('SignupCtrl', function ($scope, $http, $alertService, $location, ngProgress) {
+  .controller('SignupCtrl', function ($scope, $http, $alertService, $location, $rootScope, ngProgress) {
     $scope.nav = 'signup';
     $scope.form = {};
     $scope.signup = function () {
@@ -13,8 +13,10 @@ angular.module('stardate2App')
         data: $scope.form
       })
       .success(function (data, status) {
-        $location.href = '/';
+        $location.url('#/');
         ngProgress.complete();
+        if (data.user)
+          $rootScope.$broadcast('loginEvent', data.user);
       })
       .error(function (data, status) {
         ngProgress.reset();
