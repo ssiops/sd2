@@ -31,7 +31,9 @@ angular
     'ngSanitize',
     'ngRoute',
     'ui.bootstrap',
-    'ngProgress'
+    'ngProgress',
+    'angularFileUpload',
+    'hc.marked'
   ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -48,15 +50,32 @@ angular
         templateUrl: 'views/signup.html',
         controller: 'SignupCtrl'
       })
+      .when('/timeline', {
+        templateUrl: 'views/timeline.html',
+        controller: 'TimelineCtrl'
+      })
       .when('/404', {
         templateUrl: 'views/404.html'
       })
       .otherwise({
-        redirectTo: '/404'
+        templateUrl: 'views/404.html'
       });
   })
   .factory('$alertService', ['$rootScope', function ($rootScope) {
     return alertService($rootScope);
+  }])
+  .factory('$sd', ['$rootScope', function ($rootScope) {
+    var origin = new Date(Date.UTC(2011, 5, 18, 0, 0, 0, 0));
+    return {
+      toSD: function (utc) {
+        var current;
+        if (utc)
+          current = new Date(utc);
+        else
+          current = new Date();
+        return parseInt((current.getTime() - origin.getTime())/86400000).toString() + '.' + parseInt((current.getUTCHours()*60*60*1000 + current.getUTCMinutes()*60*1000 + current.getUTCSeconds()*1000 + current.getUTCMilliseconds())/8640000*1.6).toString(16);
+      }
+    };
   }]);
 
 function floatMsgCtrl ($scope) {
@@ -68,10 +87,35 @@ function floatMsgCtrl ($scope) {
   });
 }
 
-function NavCtrl($scope, $route) {
+function NavCtrl($scope, $route, $http, $rootScope) {
   $scope.isCollapsed = true;
   $scope.$route = $route;
   $scope.nav = {};
+  $scope.$on('loginEvent', function (e, user) {
+    $scope.user = user;
+    $scope.loggedin = true;
+  });
+  $scope.logout = function () {
+    $http({
+      method:'GET',
+      url: '/logout.json' // TODO: Change to actual url
+    })
+    .success(function (data, status) {
+      delete $scope.user;
+      $scope.loggedin = false;
+    });
+  };
+  $scope.checkUser = function () {
+    $http({
+      method: 'GET',
+      url: '/userstatus.json' // TODO: Change to actual url
+    })
+    .success(function (data, status) {
+      if (data.user)
+        $rootScope.$broadcast('loginEvent', data.user);
+    });
+  };
+  $scope.checkUser();
 }
 
 function ProgressCtrl($scope, ngProgress) {

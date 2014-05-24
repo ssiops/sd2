@@ -1,0 +1,103 @@
+<div class="row">
+  <div class="col-lg-8 col-lg-offset-2 timeline-add{{timeline_add_active?' active':''}}">
+    <div class="timeline-add-form">
+      <div class="cbg">
+        <h2>{{editMode?'Edit':'New'}} Event</h2>
+        <div class="form-group">
+          <input type="text" class="form-control" id="new_title" placeholder="Event Title" ng-model="newEvent.title">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" id="new_location" placeholder="Event Location" ng-model="newEvent.location">
+        </div>
+        <div class="form-group">
+          <div class="btn-group dropdown">
+            <a href="javascript:void(0)" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              Start Time
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="timeline-add-timepicker"><timepicker ng-model="newEvent.start" hour-step="1" minute-step="1" show-meridian="false"></timepicker></li>
+            </ul>
+          </div>
+          <div class="btn-group dropdown">
+            <a href="javascript:void(0)" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              End Time
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="timeline-add-timepicker"><timepicker ng-model="newEvent.end" hour-step="1" minute-step="1" show-meridian="false"></timepicker></li>
+            </ul>
+          </div>
+        </div>
+        <div class="form-group content-editor">
+          <div class="btn-toolbar">
+            <div class="btn-group">
+              <button type="button" class="btn btn-default" ng-model="toolbar.bold" ng-click="insert({wrap: '**'})"><i class="glyphicon glyphicon-bold"></i></button>
+              <button type="button" class="btn btn-default" ng-model="toolbar.italic" ng-click="insert({wrap: '__'})"><i class="glyphicon glyphicon-italic"></i></button>
+            </div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default" ng-model="toolbar.link" ng-click="insert({simple: '[TEXT](HREF)'})"><i class="glyphicon glyphicon-link"></i></button>
+              <button type="button" class="btn btn-default" ng-model="toolbar.quote" ng-click="insert({home: '> '})"><i class="glyphicon glyphicon-comment"></i></button>
+              <button type="button" class="btn btn-default" ng-model="toolbar.code" ng-click="insert({wrap: '`'})"><i class="glyphicon glyphicon-stop"></i></button>
+              <button type="button" class="btn btn-default" ng-model="toolbar.image" ng-click="openModal()"><i class="glyphicon glyphicon-picture"></i></button>
+            </div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default" ng-model="toolbar.ul" ng-click="insert({home: '* '})"><i class="glyphicon glyphicon-list"></i></button>
+              <button type="button" class="btn btn-default" ng-model="toolbar.li" ng-click="insert({home: '0. '})"><i class="glyphicon glyphicon-sort-by-order"></i></button>
+              <button type="button" class="btn btn-default" ng-model="toolbar.h" ng-click="insert({home: '# '})"><i class="glyphicon glyphicon-header"></i></button>
+              <button type="button" class="btn btn-default" ng-model="toolbar.hr" ng-click="insert({line: '* * *'})"><i class="glyphicon glyphicon-minus"></i></button>
+            </div>
+            <div class="btn-group timeline-add-colorpicker">
+              <button class="btn btn-default" ng-click="newEvent.style = 'default'"><i class="glyphicon glyphicon-ok" ng-show="newEvent.style == 'default'"></i></button>
+              <button class="btn btn-primary" ng-click="newEvent.style = 'primary'"><i class="glyphicon glyphicon-ok" ng-show="newEvent.style == 'primary'"></i></button>
+              <button class="btn btn-info" ng-click="newEvent.style = 'info'"><i class="glyphicon glyphicon-ok" ng-show="newEvent.style == 'info'"></i></button>
+              <button class="btn btn-warning" ng-click="newEvent.style = 'warning'"><i class="glyphicon glyphicon-ok" ng-show="newEvent.style == 'warning'"></i></button>
+              <button class="btn btn-danger" ng-click="newEvent.style = 'danger'"><i class="glyphicon glyphicon-ok" ng-show="newEvent.style == 'danger'"></i></button>
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea name="body" id="editor-body" rows="8" class="form-control" placeholder="Say something about it..."></textarea>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-lg btn-danger" ng-click="editMode=false;timeline_add_active=false;newEvent={};"><i class="glyphicon glyphicon-remove"></i></button>
+    </div>
+    <button class="btn btn-lg btn-{{timeline_add_active?'success':'default'}}" ng-click="post(timeline_add_active);timeline_add_active=true;textarea.value=''"><i class="glyphicon glyphicon-{{editMode?'ok':'plus'}}"></i></button>
+  </div>
+</div>
+
+<div class="timeline-content row">
+  <div class="{{e.active?'col-md-8':'col-md-4'}}" ng-repeat="e in events">
+    <div class="cbg bottom-stroke style-{{e.style}}">
+      <h3><a class="label label-{{e.style}}" href="javascript:void(0)" tooltip="{{e.time}}" tooltip-placement="bottom">{{$sd.toSD(e.time)}}</a> {{e.title}} <button class="btn btn-default pull-right" ng-click="events[$index].active = !events[$index].active"><i class="glyphicon glyphicon-resize-{{e.active?'small':'full'}}"></i></button></h3>
+      <h4>[@{{e.location}}]</h4>
+      <div class="timeline-content-collapsed">
+        <div class="timeline-content-body" ng-bind-html="md(e.content)"></div>
+        <div class="btn-toolbar">
+          <div class="btn-group">
+            <button class="btn btn-default" ng-click="toEditor($index)"><i class="glyphicon glyphicon-pencil"></i></button>
+            <button class="btn btn-default"><i class="glyphicon glyphicon-send"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="imgUpload.html">
+<div class="modal-header">
+  <h3>Image upload</h3>
+</div>
+<div class="modal-body">
+  <div class="well img-drop-zone" ng-file-drop ng-file-over>
+      Drop image here, or <button class="btn btn-primary" ng-click="showFileInput=1">Choose an image</button>
+      <input ng-file-select type="file" name="imageInput" id="imageInput" accept="image/*" ng-show="showFileInput">
+  </div>
+  <div class="progress progress-striped" style="">
+    <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+</div>
+</script>

@@ -1,6 +1,7 @@
 @import "bootstrap/variables.less";
 
 @import "floatmsg.less";
+@import "timeline.less";
 
 body {
   padding-top: 50px;
@@ -117,6 +118,19 @@ img#res {
 img#brand {
   width: 44px;
   height: 20px;
+}
+
+.img-drop-zone {
+  text-align: center;
+  border: dotted 3px #888;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+.img-drop-zone.ng-file-over {
+  border-color: #33b5e5;
+  background-color: rgba(255, 255, 255, 0.07);
+}
+.img-drop-zone input[type="file"] {
+  display: inline-block;
 }
 
 #ngProgress-container {
