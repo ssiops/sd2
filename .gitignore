@@ -1,0 +1,4 @@
+node_modules
+dist
+.tmp
+static/bower_components
