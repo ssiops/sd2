@@ -16,7 +16,7 @@
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-              <li class="timeline-add-timepicker"><timepicker ng-model="newEvent.start" hour-step="1" minute-step="1" show-meridian="false"></timepicker></li>
+              <li class="timeline-add-timepicker"><timepicker ng-model="newEvent.begin" hour-step="1" minute-step="1" show-meridian="false"></timepicker></li>
             </ul>
           </div>
           <div class="btn-group dropdown">
@@ -69,14 +69,23 @@
 <div class="timeline-content row">
   <div class="{{e.active?'col-md-8':'col-md-4'}}" ng-repeat="e in events">
     <div class="cbg bottom-stroke style-{{e.style}}">
-      <h3><a class="label label-{{e.style}}" href="javascript:void(0)" tooltip="{{e.time}}" tooltip-placement="bottom">{{$sd.toSD(e.time)}}</a> {{e.title}} <button class="btn btn-default pull-right" ng-click="events[$index].active = !events[$index].active"><i class="glyphicon glyphicon-resize-{{e.active?'small':'full'}}"></i></button></h3>
+      <h3><a class="label label-{{e.style}}" href="javascript:void(0)" tooltip="{{e.time}}" tooltip-placement="bottom">{{$sd.toSD(e.time)}}</a> {{e.title}} <button class="btn btn-default pull-right" ng-click="e.active = !e.active; e.share_active = false;"><i class="glyphicon glyphicon-resize-{{e.active?'small':'full'}}"></i></button></h3>
       <h4>[@{{e.location}}]</h4>
       <div class="timeline-content-collapsed">
         <div class="timeline-content-body" ng-bind-html="md(e.content)"></div>
-        <div class="btn-toolbar">
-          <div class="btn-group">
-            <button class="btn btn-default" ng-click="toEditor($index)"><i class="glyphicon glyphicon-pencil"></i></button>
-            <button class="btn btn-default"><i class="glyphicon glyphicon-send"></i></button>
+        <p>
+          <button class="btn btn-default" ng-click="toEditor($index)"><i class="glyphicon glyphicon-pencil"></i></button>
+          <button class="btn btn-default" ng-click="e.share_active = !e.share_active"><i class="glyphicon glyphicon-share-alt"></i></button>
+        </p>
+      </div>
+      <div class="row" collapse="!e.share_active">
+        <div class="col-xs-8">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Share this event with..." ng-model="share_input" typeahead="user as user.name for user in users | filter:$viewValue | limitTo:8">
+            <span class="input-group-btn">
+              {{share_input.id}}
+              <button class="btn btn-success" type="button" ng-click="share(share_input.id, e.id)"><i class="glyphicon glyphicon-send"></i></button>
+            </span>
           </div>
         </div>
       </div>

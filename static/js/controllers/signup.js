@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('stardate2App')
-  .controller('SignupCtrl', function ($scope, $http, $alertService, $location, $rootScope, ngProgress) {
+  .controller('SignupCtrl', function ($scope, $http, $alertService, $location, $rootScope, ngProgress, __rootdir__) {
     $scope.nav = 'signup';
     $scope.form = {};
     $scope.signup = function () {
@@ -9,19 +9,19 @@ angular.module('stardate2App')
       ngProgress.start();
       $http({
         method: 'POST',
-        url: '/signup',
+        url: __rootdir__ + '/user/' + $scope.form.name,
         data: $scope.form
       })
       .success(function (data, status) {
-        $location.url('#/');
         ngProgress.complete();
+        $location.url('#/');
         if (data.user)
           $rootScope.$broadcast('loginEvent', data.user);
       })
       .error(function (data, status) {
         ngProgress.reset();
-        console.log(data);
         $alertService.send('An error has ocurred. Please try again later.');
+        if (data.err) console.log(data.err);
       });
     };
   });

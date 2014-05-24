@@ -54,6 +54,10 @@ angular
         templateUrl: 'views/timeline.html',
         controller: 'TimelineCtrl'
       })
+      .when('/shared', {
+        templateUrl: 'views/timeline.html',
+        controller: 'TimelineCtrl'
+      })
       .when('/404', {
         templateUrl: 'views/404.html'
       })
@@ -76,6 +80,9 @@ angular
         return parseInt((current.getTime() - origin.getTime())/86400000).toString() + '.' + parseInt((current.getUTCHours()*60*60*1000 + current.getUTCMinutes()*60*1000 + current.getUTCSeconds()*1000 + current.getUTCMilliseconds())/8640000*1.6).toString(16);
       }
     };
+  }])
+  .factory('_rootdir_', ['$rootScope', function ($rootScope) {
+    return '/SDR2';
   }]);
 
 function floatMsgCtrl ($scope) {
@@ -87,7 +94,7 @@ function floatMsgCtrl ($scope) {
   });
 }
 
-function NavCtrl($scope, $route, $http, $rootScope) {
+function NavCtrl($scope, $route, $http, $rootScope, __rootdir__) {
   $scope.isCollapsed = true;
   $scope.$route = $route;
   $scope.nav = {};
@@ -98,7 +105,7 @@ function NavCtrl($scope, $route, $http, $rootScope) {
   $scope.logout = function () {
     $http({
       method:'GET',
-      url: '/logout.json' // TODO: Change to actual url
+      url: __rootdir__ + '/logout' //'/logout.json' // TODO: Change to actual url
     })
     .success(function (data, status) {
       delete $scope.user;
@@ -108,7 +115,7 @@ function NavCtrl($scope, $route, $http, $rootScope) {
   $scope.checkUser = function () {
     $http({
       method: 'GET',
-      url: '/userstatus.json' // TODO: Change to actual url
+      url: __rootdir__ + '/currentLogin'
     })
     .success(function (data, status) {
       if (data.user)
@@ -116,6 +123,9 @@ function NavCtrl($scope, $route, $http, $rootScope) {
     });
   };
   $scope.checkUser();
+  $scope.broadcast = function (e) {
+    $rootScope.$broadcast(e);
+  };
 }
 
 function ProgressCtrl($scope, ngProgress) {

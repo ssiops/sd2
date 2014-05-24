@@ -1,6 +1,6 @@
 'use strict';
 
-function modalCtrl ($scope, $modalInstance, $fileUploader) {
+function modalCtrl ($scope, $modalInstance, $fileUploader, __rootdir__) {
   $scope.ok = function () {
     $modalInstance.close();
   };
@@ -11,35 +11,49 @@ function modalCtrl ($scope, $modalInstance, $fileUploader) {
 
   $scope.uploader = $fileUploader.create({
     scope: $scope,
-    url: '/usercontent/blog/img',
+    url: __rootdir__ + '/usercontent/img/',
     autoUpload: true
   });
 
   $scope.uploader.progress = 0;
 
   $scope.uploader.bind('success', function (event, xhr, item, response) {
-    $modalInstance.close('/usercontent/blog/' + response.filename);
+    $modalInstance.close(response.url);
   });
 }
 
 angular.module('stardate2App')
-  .controller('TimelineCtrl', function ($scope, $window, $http, $sd, $modal, $alertService, marked) {
-    $scope.nav = 'timeline';
+  .controller('TimelineCtrl', function ($scope, $window, $location, $http, $sd, $modal, $alertService, marked, __rootdir__) {
+
+    
     $scope.$sd = $sd;
     $scope.events = [];
     $scope.md = marked;
-    $scope.getEvents = function () {
+    $scope.getEvents = function (origin) {
+      var url = __rootdir__ + '/mycalendar';
+      if (origin === 'shared')
+        url = __rootdir__ + '/sharedcalendar';
       $http({
         method: 'GET',
-        url: '/events.json' // TODO
+        url: url
       })
       .success(function (data, status) {
         if (data.events) {
           $scope.events = data.events;
         }
+      })
+      .error(function (data, status) {
+        $alertService.send('An error has ocurred. Please try again later.');
+        if (data.err) console.log(data.err);
       });
     };
-    $scope.getEvents();
+    if ($location.url().search(/timeline$/g) >= 0) {
+      $scope.nav = 'timeline';
+      $scope.getEvents();
+    } else {
+      $scope.nav = 'shared';
+      $scope.getEvents('shared');
+    }
 
     $scope.textarea = $window.document.getElementById('editor-body');
     $scope.newEvent = {style: 'default'};
@@ -95,9 +109,12 @@ angular.module('stardate2App')
       if (!really)
         return;
       $scope.newEvent.content = $scope.textarea.value;
+      var url = __rootdir__ + '/calendar';
+      if ($scope.newEvent.id)
+        url +=  $scope.newEvent.id;
       $http({
-        method: 'PUT',
-        url: '/calendar',
+        method: 'POST',
+        url: url,
         data: $scope.newEvent
       })
       .success(function (data, status) {
@@ -106,6 +123,38 @@ angular.module('stardate2App')
       })
       .error(function (data, status) {
         $alertService.send('An error has ocurred. Please try again later.');
+        if (data.err) console.log(data.err);
       });
     };
+
+    $scope.share = function (userid, eventid) {
+      $http({
+        method: 'POST',
+        url: __rootdir__ + '/calendarRestrict/' + eventid,
+        data: {'userid': userid}
+      })
+      .success(function (data, status) {
+        $alertService.send({style: 'success', msg: 'Your event has been successfully shared.'});
+      })
+      .error(function (data, status) {
+        $alertService.send('An error has ocurred. Please try again later.');
+        if (data.err) console.log(data.err);
+      });
+    };
+
+    $scope.getUsers = function () {
+      $http({
+        method: 'GET',
+        url: __rootdir__ + '/allUser'//'/users.json'
+      })
+      .success(function (data, status) {
+        if (data.users)
+          $scope.users = data.users;
+      })
+      .error(function (data, status) {
+        $alertService.send('An error has ocurred. Please try again later.');
+        if (data.err) console.log(data.err);
+      });
+    };
+    $scope.getUsers();
   });

@@ -1,6 +1,6 @@
 .timeline-add {
   margin-bottom: 12px;
-  opacity: 0.2;
+  opacity: 0.4;
   transition: opacity 0.2s;
   -webkit-transition: opacity 0.2s;
   > button {
@@ -30,7 +30,7 @@
     }
   }
   &:hover {
-    opacity: 0.75;
+    opacity: 0.9;
   }
   &.active {
     opacity: 1;
@@ -59,7 +59,7 @@
 
 .bottom-stroke {
   position: relative;
-  padding-bottom: 28px;
+  padding-bottom: 28px !important;
   &:after {
     content: '';
     display: block;
@@ -84,6 +84,18 @@
   }
 }
 
+.share-input {
+  display: inline-block;
+  max-width: 0;
+  transition: max-width 0.4s;
+  -webkit-transition: max-width 0.4s;
+  > .form-control {
+    display: inline-block !important;
+  }
+  &.active {
+    max-width: 40%;
+  }
+}
 
 #editor-body {
   font-family: "Courier New", Courier, monospace;

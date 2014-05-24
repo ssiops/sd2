@@ -42,10 +42,10 @@
             <a href="#/signup">Signup</a>
           </li>
           <li class="{{$route.current.scope.nav == 'timeline' ? ' active':''}}" ng-show="loggedin">
-            <a href="#/timeline">Timeline</a>
+            <a href="#/timeline">My Timeline</a>
           </li>
-          <li class="{{$route.current.scope.nav == 'starlogs' ? ' active':''}}" ng-show="loggedin">
-            <a href="#/notes">Starlogs</a>
+          <li class="{{$route.current.scope.nav == 'shared' ? ' active':''}}" ng-show="loggedin">
+            <a href="#/shared">Shared With Me</a>
           </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -54,7 +54,7 @@
             <a href="#/login">#!SSIOPS&gt;&gt;stdops</a>
           </li>
           <li class="dropdown" ng-show="loggedin">
-            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">#!SSIOPS&gt;&gt;{{user.name}}</a>
+            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">#!SSIOPS&gt;&gt;{{user.username}}</a>
             <ul class="dropdown-menu">
               <li><a href="#/profile">My Profile</a></li>
               <li><a href="#/preferences">Preferences</a></li>
@@ -103,6 +103,7 @@
 
   <footer class="container signature">
     <p><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-right"></span> with <span class="glyphicon glyphicon-heart"></span> by <a href="mailto:super-ops@ssiops.org">SierraSix</a> and <a href="mailto:bilibili10086@gmail.com">HakureReimu</a>.</p>
+    <p>Warp Engine&reg; is a registered trademark of Hexchain Technologies Inc.&#8482; Play God, Pay The Price.</p>
     <p><a href="http://www.ingress.com" class="btn btn-primary" target="_blank"><img id="res" src="./img/resistance-logo.svg" alt="Join the Resistance!"> Join the Resistance!</a></p>
   </footer>
 

@@ -39,8 +39,8 @@ module.exports = function(grunt) {
           mangle: false
         },
         files: [{
-          src: './static/controllers/*.js',
-          dest: '<%= target %>/controllers/js',
+          src: './static/js/controllers/*.js',
+          dest: '<%= target %>/js/controllers/',
           expand: true,
           flatten: true,
           ext: '.min.js'
